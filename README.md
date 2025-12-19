@@ -5,91 +5,58 @@
 <title>ANAJAK International Store</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f4f6f8;
-}
+* { font-family: "Times New Roman", Times, serif; }
 
-/* HEADER */
+body { margin: 0; background: #f4f6f8; }
+
 header {
-  background: linear-gradient(90deg, #111, #333);
-  color: white;
-  padding: 15px 20px;
+  background: linear-gradient(90deg, #000, #222);
+  color: gold;
+  padding: 15px 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.logo { display: flex; align-items: center; gap: 15px; }
+.logo img { width: 55px; }
+.logo h1 { margin: 0; }
 
-.logo img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.logo h1 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.user {
-  font-size: 14px;
-}
-
-/* BUTTONS */
 button {
-  padding: 10px;
+  padding: 10px 18px;
   border-radius: 25px;
   border: none;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
 }
 
 .btn-primary {
-  background: linear-gradient(45deg, #ff6a00, #ee0979);
-  color: white;
-}
-
-.btn-primary:hover {
-  opacity: 0.85;
+  background: linear-gradient(45deg, gold, #caa300);
 }
 
 .btn-secondary {
-  background: linear-gradient(45deg, #2193b0, #6dd5ed);
-  color: white;
+  background: linear-gradient(45deg, #333, #111);
+  color: gold;
 }
 
-/* PRODUCTS */
 .products {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 25px;
   padding: 30px;
   flex-wrap: wrap;
 }
 
 .card {
   background: white;
-  width: 220px;
+  width: 240px;
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-.card img {
-  width: 100%;
-  border-radius: 10px;
-}
+.card img { width: 100%; border-radius: 10px; }
 
-/* SECTIONS */
 .section {
   background: white;
   margin: 20px;
@@ -97,19 +64,29 @@ button {
   border-radius: 10px;
 }
 
-input {
-  padding: 8px;
-  width: 200px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-/* FOOTER */
 footer {
-  background: #111;
-  color: white;
+  background: black;
+  color: gold;
   text-align: center;
   padding: 15px;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  border-radius: 12px;
+  text-align: center;
 }
 </style>
 </head>
@@ -118,13 +95,11 @@ footer {
 
 <header>
   <div class="logo">
-    <!-- REAHU LOGO -->
-    <img src="https://i.imgur.com/Z6f7K9Q.png" alt="Reahu Logo">
+    <img src="reahu-logo.png">
     <h1>ANAJAK</h1>
   </div>
-
-  <div class="user">
-    👤 <span id="username">Guest</span>
+  <div>
+    👤 <span id="user">Guest</span>
     <button class="btn-secondary" onclick="login()">Login</button>
   </div>
 </header>
@@ -134,84 +109,108 @@ footer {
     <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab">
     <h3>T-Shirt</h3>
     <p>$25</p>
-    <button class="btn-primary" onclick="addToCart('T-Shirt')">Add to Cart</button>
+    <button class="btn-primary" onclick="details('T-Shirt',25)">View Details</button>
   </div>
 
   <div class="card">
     <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f">
     <h3>Hoodie</h3>
     <p>$45</p>
-    <button class="btn-primary" onclick="addToCart('Hoodie')">Add to Cart</button>
+    <button class="btn-primary" onclick="details('Hoodie',45)">View Details</button>
   </div>
 
   <div class="card">
     <img src="https://images.unsplash.com/photo-1520975916090-3105956dac38">
     <h3>Jacket</h3>
     <p>$80</p>
-    <button class="btn-primary" onclick="addToCart('Jacket')">Add to Cart</button>
+    <button class="btn-primary" onclick="details('Jacket',80)">View Details</button>
   </div>
 </section>
 
 <div class="section">
-  🛒 Cart Items: <b><span id="cartCount">0</span></b><br><br>
+  🌍 Shipping Country:
+  <select id="country" onchange="updateShipping()">
+    <option value="5">Cambodia ($5)</option>
+    <option value="15">Thailand ($15)</option>
+    <option value="25">Japan ($25)</option>
+    <option value="30">USA ($30)</option>
+  </select>
+
+  <p>🧾 Total: $<span id="total">0</span></p>
   <button class="btn-primary" onclick="checkout()">Place Order</button>
-  <p id="orderResult"></p>
+  <p id="orderMsg"></p>
 </div>
 
 <div class="section">
-  <h3>📦 Order Tracking</h3>
-  <input id="trackInput" placeholder="Enter Order ID">
-  <button class="btn-secondary" onclick="trackOrder()">Track</button>
+  📦 Order Tracking<br>
+  <input id="trackId" placeholder="Order ID">
+  <button class="btn-secondary" onclick="track()">Track</button>
   <p id="trackResult"></p>
 </div>
 
-<footer>
-  © 2026 ANAJAK – Designed with REAHU 🌍
-</footer>
+<footer>© 2026 ANAJAK – REAHU</footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3 id="mName"></h3>
+    <p>Price: $<span id="mPrice"></span></p>
+    <button class="btn-primary" onclick="add()">Add to Cart</button><br><br>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
 
 <script>
-let cart = [];
+let cartPrice = 0;
+let shipping = 5;
 let orders = {};
-let user = "Guest";
+let currentPrice = 0;
 
 function login() {
-  user = prompt("Enter your username:");
-  if (user) {
-    document.getElementById("username").innerText = user;
-  }
+  let u = prompt("Enter username (admin for admin):");
+  if (u) document.getElementById("user").innerText = u;
 }
 
-function addToCart(product) {
-  cart.push(product);
-  document.getElementById("cartCount").innerText = cart.length;
+function details(name, price) {
+  currentPrice = price;
+  document.getElementById("mName").innerText = name;
+  document.getElementById("mPrice").innerText = price;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function add() {
+  cartPrice += currentPrice;
+  updateShipping();
+  closeModal();
+}
+
+function updateShipping() {
+  shipping = parseInt(document.getElementById("country").value);
+  document.getElementById("total").innerText = cartPrice + shipping;
 }
 
 function checkout() {
-  if (cart.length === 0) {
-    alert("Cart is empty!");
-    return;
-  }
-  let orderId = "ANJ" + Math.floor(Math.random() * 100000);
-  orders[orderId] = "Processing";
-  document.getElementById("orderResult").innerText =
-    "✅ Order placed by " + user + ". Order ID: " + orderId;
-  cart = [];
-  document.getElementById("cartCount").innerText = 0;
+  if (cartPrice === 0) return alert("Cart empty");
+  let id = "ANJ" + Math.floor(Math.random()*10000);
+  orders[id] = "Shipped";
+  document.getElementById("orderMsg").innerText = "Order ID: " + id;
+  cartPrice = 0;
+  updateShipping();
 }
 
-function trackOrder() {
-  let id = document.getElementById("trackInput").value;
-  if (orders[id]) {
-    document.getElementById("trackResult").innerText =
-      "📦 Status: " + orders[id];
-  } else {
-    document.getElementById("trackResult").innerText =
-      "❌ Order not found";
-  }
+function track() {
+  let id = document.getElementById("trackId").value;
+  document.getElementById("trackResult").innerText =
+    orders[id] ? orders[id] : "Not Found";
 }
 </script>
 
 </body>
 </html>
+
 
 
