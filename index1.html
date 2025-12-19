@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANAJAK | International Clothing Store</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    header { background: black; color: white; padding: 20px; text-align: center; }
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+    .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    button { background: black; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 5px; }
+    footer { background: black; color: white; text-align: center; padding: 15px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ANAJAK</h1>
+  <p>International Clothing Store</p>
+</header>
+
+<section class="products">
+  <div class="card">
+    <h3>ANAJAK T-Shirt</h3>
+    <p>$25</p>
+    <button onclick="addToCart('T-Shirt',25)">Add to Cart</button>
+  </div>
+  <div class="card">
+    <h3>ANAJAK Hoodie</h3>
+    <p>$45</p>
+    <button onclick="addToCart('Hoodie',45)">Add to Cart</button>
+  </div>
+  <div class="card">
+    <h3>ANAJAK Jacket</h3>
+    <p>$80</p>
+    <button onclick="addToCart('Jacket',80)">Add to Cart</button>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 ANAJAK | Simulation Project</p>
+</footer>
+
+<script>
+  let total = 0;
+  function addToCart(name, price) {
+    total += price;
+    alert(name + " added to cart. Total: $" + total);
+  }
+</script>
+
+</body>
+</html>
